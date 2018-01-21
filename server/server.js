@@ -98,14 +98,23 @@ app.post('/users', (req, res) => {
         res.status(400).send(e);
     })
 });
-
-//res.header -> to set the key:value pair
-//req.header -> to get the key:value pair
-
+//res.header -> to set the key:value pair || req.header -> to get the key:value pair
 
 app.get('/users/me', authenticate, (req,res) => {
     //req.user coming from authenticate middleware
     res.send(req.user);
+});
+
+app.post('/users/login', (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']); 
+
+    User.findByCardentials(body.email, body.password).then((user) => {
+        return user.generateAuthToken().then((token) => {
+            res.header('x-auth', token).send(user);
+        });
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
 });
 
 app.listen(port, () => {

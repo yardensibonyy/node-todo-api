@@ -77,6 +77,26 @@ UserSchema.statics.findByToken = function (token) {  //.statics -> model method
     });
 };
 
+UserSchema.statics.findByCardentials = function(email, password) {
+    var User = this;
+
+    return User.findOne({email}).then((user) => {
+        if (!user) {
+            return Promise.reject(); //will trigger the catch block at server.js
+        }
+
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, (err, result) => {
+                if (result) {
+                    resolve(user);
+                } else {
+                    reject();
+                }
+            });
+        });
+    });
+};
+
 //mongoose middleware
 UserSchema.pre('save', function (next) {
     var user = this;
