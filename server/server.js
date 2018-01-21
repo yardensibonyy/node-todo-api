@@ -87,7 +87,7 @@ app.patch('/todos/:id', (req, res) => {
 
 //POST /users
 app.post('/users', (req, res) => {
-    var body = _.pick(req.body, ['email', 'password']);
+    var body = _.pick(req.body, ['email', 'password']); //selects email and password to return as the res.body
     var user = new User(body);
 
     user.save().then(() => {
@@ -103,7 +103,8 @@ app.post('/users', (req, res) => {
 //req.header -> to get the key:value pair
 
 
-app.get('/users/me',authenticate, (req,res) => {
+app.get('/users/me', authenticate, (req,res) => {
+    //req.user coming from authenticate middleware
     res.send(req.user);
 });
 
