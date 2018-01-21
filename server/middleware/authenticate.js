@@ -6,17 +6,15 @@ var authenticate = (req, res, next) => {
 
     User.findByToken(token).then((user) => {
         if (!user) {
-            return Promise.reject(); //send to catch block 6 lines below
+            return Promise.reject(); //Promise.reject sends to catch block 6 lines below
         }
 
         req.user = user;
         req.token = token;
         next();
     }).catch((e) => {
-        res.status(401).send(); //401 = auth is required
+        res.status(401).send(); //401 status code = authentication is required
     });
 };
 
-module.exports = {
-    authenticate: authenticate
-};
+module.exports = {authenticate};
