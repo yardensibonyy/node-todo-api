@@ -37,6 +37,8 @@ var UserSchema = new mongoose.Schema({
 
 //overwrite the body response that sent back to the user. 
 //This way the user won't get the password or the token back.
+//toJSON is a special function that gets called without publicly invoking it.
+//It's called when we pass a Mongoose instance to express as the response body.
 UserSchema.methods.toJSON = function () {
     var user = this;
     var userObject = user.toObject();
@@ -47,7 +49,7 @@ UserSchema.methods.toJSON = function () {
 UserSchema.methods.generateAuthToken = function () { //.methods -> instance method
     var user = this;
     var access = 'auth';
-    var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
+    var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 
     user.tokens = user.tokens.concat([{access, token}]); //add the object to tokens array.
 
@@ -73,7 +75,7 @@ UserSchema.statics.findByToken = function (token) {  //.statics -> model method
     var decoded;
 
     try {
-        decoded = jwt.verify(token, 'abc123');
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
         return Promise.reject('this meassage will be the err argument of catch handler at server.js');
         // return new Promise((resolve, reject) => {
