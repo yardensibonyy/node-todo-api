@@ -56,6 +56,18 @@ UserSchema.methods.generateAuthToken = function () { //.methods -> instance meth
     });
 };
 
+UserSchema.methods.removeToken = function (token) {
+    var user = this;
+
+    return user.update({
+        $pull: { //mongodb method that removes from an array (tokens array) all instances of a value or values that match a specified condition.
+            tokens: {
+                token: token
+            }
+        }
+    });
+};
+
 UserSchema.statics.findByToken = function (token) {  //.statics -> model method
     var User = this; 
     var decoded;

@@ -2,7 +2,7 @@ var {User} = require('../models/user');
 
 //middleware
 var authenticate = (req, res, next) => {
-    var token = req.header('x-auth');
+    var token = req.header('x-auth'); //res.header -> to set the key:value pair || req.header -> to get the key:value pair
 
     User.findByToken(token).then((user) => {
         if (!user) {
